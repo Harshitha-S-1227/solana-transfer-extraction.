@@ -1,0 +1,39 @@
+specVersion: v0.1.0
+package:
+  name: solana_transfers
+  version: v0.1.0
+  description: Extracts native SOL transfers (System Program Transfer) from Solana blocks
+
+imports:
+  solana: https://spkg.io/streamingfast/solana-common-v0.4.0.spkg
+
+protobuf:
+  files:
+    - transfers.proto
+  importPaths:
+    - ./proto
+  excludePaths:
+    - sf/substreams/rpc
+    - sf/substreams/v1
+    - sf/substreams/sink
+    - sf/substreams/index
+    - sf/substreams/index/v1
+    - instructions.proto # sol.instructions.v1 from the v0.2.0 spkg
+    - transactions.proto # sol.transactions.v1 from the v0.2.0 spkg
+    - google
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/substreams.wasm
+
+modules:
+ - name: map_transfers
+   kind: map
+   initialBlock: 385870151
+   inputs:
+   - map: solana:blocks_without_votes
+   output:
+    type: proto:transfers.v1.Transfers
+
+network: solana-mainnet-beta

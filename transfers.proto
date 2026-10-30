@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package transfers.v1;
+
+// All native SOL transfers found in one block.
+message Transfers {
+  repeated Transfer transfers = 1;
+}
+
+message Transfer {
+  string from = 1;   // sender wallet, base58
+  string to = 2;     // recipient wallet, base58
+  uint64 amount = 3; // lamports
+}
